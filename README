@@ -1,0 +1,7 @@
+Passera is a Scala library that provides some utilities for scientific
+computing.
+
+- UInt - unsigned ints
+- ULong - unsigned longs
+- BBArray - buffer-backed arrays
+- VeryLargeArray - long-index arrays
