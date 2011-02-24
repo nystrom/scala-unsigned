@@ -68,24 +68,24 @@ object UnsignedTest {
       forAll { (a: UInt, b: UInt, c: UInt) => (a + b) * c == (a*c) + (b*c) }
 
     property("Minus1") =
-      forAll { (a: UInt) => -a == 0 - a }
+      forAll { (a: UInt) => -a == zero - a }
     property("Minus2") =
-      forAll { (a: UInt) => 0 - a == -a }
+      forAll { (a: UInt) => zero - a == -a }
 
     property("PlusMinusInverses1") =
-      forAll { (a: UInt, b: UInt) => a - b + b == a.toInt }
+      forAll { (a: UInt, b: UInt) => a - b + b == a }
     property("PlusMinusInverses2") =
-      forAll { (a: UInt, b: UInt) => a + b - b == a.toInt }
+      forAll { (a: UInt, b: UInt) => a + b - b == a }
     property("PlusMinusInverses3") =
-      forAll { (a: UInt, b: UInt) => b + a - b == a.toInt }
+      forAll { (a: UInt, b: UInt) => b + a - b == a }
     property("PlusMinusInverses4") =
-      forAll { (a: UInt, b: UInt) => -b + a + b == a.toInt }
+      forAll { (a: UInt, b: UInt) => -b + a + b == a }
     property("PlusMinusInverses5") =
-      forAll { (a: UInt, b: UInt) => -b + a + b == a.toInt }
+      forAll { (a: UInt, b: UInt) => -b + a + b == a }
     property("PlusMinusInverses6") =
-      forAll { (a: UInt, b: UInt) => b + (a - b) == a.toInt }
+      forAll { (a: UInt, b: UInt) => b + (a - b) == a }
     property("PlusMinusInverses7") =
-      forAll { (a: UInt, b: UInt) => b + (-b + a) == a.toInt }
+      forAll { (a: UInt, b: UInt) => b + (-b + a) == a }
 
     property("SignedPlusMinusInverses1") =
       forAll { (a: Int, b: UInt) => a - b + b == a.toInt }

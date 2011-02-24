@@ -46,11 +46,11 @@ package object unsigned {
 
   trait UIntIsIntegral extends Integral[UInt] {
     def plus(x: UInt, y: UInt): UInt = x + y
-    def minus(x: UInt, y: UInt): UInt = UInt(x - y) // broken!
+    def minus(x: UInt, y: UInt): UInt = x - y
     def times(x: UInt, y: UInt): UInt = x * y
     def quot(x: UInt, y: UInt): UInt = x / y
     def rem(x: UInt, y: UInt): UInt = x % y
-    def negate(x: UInt): UInt = UInt(-x)
+    def negate(x: UInt): UInt = -x
     def fromInt(x: Int): UInt = UInt(x)
     def toInt(x: UInt): Int = x.toInt
     def toLong(x: UInt): Long = x.toLong
@@ -114,7 +114,7 @@ package object unsigned {
 
       def +(x: UInt) = UInt(rep + x.rep)
       def *(x: UInt) = UInt(rep * x.rep)
-      def -(x: UInt) = rep - x.rep // signed, not unsigned!!! This breaks Numeric
+      def -(x: UInt) = UInt(rep - x.rep)
 
       private def rot(x: Int) = (x + Int.MinValue)
 
@@ -201,7 +201,7 @@ package object unsigned {
       def >>>(x : UInt) = UInt(rep >>> (x.rep & 0x1f))
 
       def unary_+ = this
-      def unary_- = -rep   // signed!  Could be confusing.
+      def unary_- = UInt(-rep)
       def unary_~ = UInt(~rep)
     }
   }
