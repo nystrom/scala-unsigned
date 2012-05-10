@@ -14,41 +14,41 @@ object UnsignedPerf {
     }
 
     println {
-    time {
-    val n = 100000000
-    val a = 328923.toUInt
-    val b = 713480.toUInt
-    var c = 0.toUInt
+      time {
+        val n = 100000000
+        val a = 328923.toUInt
+        val b = 713480.toUInt
+        var c = 0.toUInt
 
-      var i = 0
-      while (i < n) {
-        i += 1
-        c += a
-        c *= b
-        c /= a
+        var i = 0
+        while (i < n) {
+          i += 1
+          c += a
+          c *= b
+          c /= a
+        }
+
+        c
       }
-
-      c
     }
-  }
 
     println {
-    time {
-    val n = 100000000
-    val a = 328923
-    val b = 713480
-    var c = 0
+      time {
+        val n = 100000000
+        val a = 328923
+        val b = 713480
+        var c = 0
 
-      var i = 0
-      while (i < n) {
-        i += 1
-        c += a
-        c *= b
-        c /= a
+        var i = 0
+        while (i < n) {
+          i += 1
+          c += a
+          c *= b
+          c /= a
+        }
+
+        c
       }
-
-      c
     }
-  }
   }
 }
