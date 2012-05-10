@@ -2,6 +2,9 @@ package passera.unsigned
 
 import scala.math.{ScalaNumber, ScalaNumericConversions}
 
+/**
+ * Supertrait of UByte, UShort, UInt
+ */
 @serializable
 trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
   private def intRep = intValue
@@ -141,11 +144,11 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
   def >>(x : ULong) = UInt(intRep << (x.toLong & 0x1f))
   def >>>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
 
-  override def toString = (intRep & 0xffffffffL).toString + "u"
+  override def toString = (intRep & 0xffffffffL).toString
 
   def +(x : java.lang.String) = this.toString + x
 
-  def toHexString = (intRep & 0xffffffffL).toHexString + "u"
-  def toOctalString = (intRep & 0xffffffffL).toOctalString + "u"
-  def toBinaryString = (intRep & 0xffffffffL).toBinaryString + "u"
+  def toHexString = (intRep & 0xffffffffL).toHexString
+  def toOctalString = (intRep & 0xffffffffL).toOctalString
+  def toBinaryString = (intRep & 0xffffffffL).toBinaryString
 }

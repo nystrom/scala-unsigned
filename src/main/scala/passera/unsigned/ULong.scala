@@ -129,15 +129,15 @@ case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNum
 
   override def toString =
     if (rep >= 0L)
-      rep.toString + "u"
+      rep.toString
     else if (rep == 1 << 63)
-      (rep.toString + "u").tail
+      (rep.toString).tail
     else
-      (~(rep - 1)).toString + "u"
+      (~(rep - 1)).toString
 
-  def toHexString = rep.toHexString + "u"
-  def toOctalString = rep.toOctalString + "u"
-  def toBinaryString = rep.toBinaryString + "u"
+  def toHexString = rep.toHexString
+  def toOctalString = rep.toOctalString
+  def toBinaryString = rep.toBinaryString
 
   // Equality comparison to UInt is baked in
 
@@ -191,4 +191,9 @@ case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNum
   def unary_+ = this
   def unary_- = ULong(-rep)
   def unary_~ = ULong(~rep)
+}
+
+object ULong {
+  def MinValue = ULong(0L)
+  def MaxValue = ULong(~0L)
 }

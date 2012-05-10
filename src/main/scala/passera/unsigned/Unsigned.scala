@@ -3,7 +3,11 @@ package passera.unsigned
 import scala.math.{ScalaNumber, ScalaNumericConversions}
 
 @serializable
-trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted], Promoted <: Unsigned[_, Promoted, SignedPromoted], SignedPromoted] extends ScalaNumericConversions {
+trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
+               Promoted <: Unsigned[_, Promoted, SignedPromoted],
+               SignedPromoted]
+               extends ScalaNumericConversions {
+
   def toUByte: UByte
   def toUShort: UShort
   def toUInt: UInt
