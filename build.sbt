@@ -2,7 +2,7 @@ name := "scala-unsigned"
 
 version := "0.1"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.10.0-M3"
 
 resolvers ++= Seq(
   "snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
@@ -10,5 +10,5 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scalacheck" %% "scalacheck" % "1.9" % "test"
+  "org.scalacheck" % "scalacheck_2.9.2" % "1.9" % "test"
 )

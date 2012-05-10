@@ -24,6 +24,16 @@ To use:
     res1: Int = 0
 
 
+Value classes
+-------------
+
+The branch value-classes contains a version that works with Scala 2.10.0-M3.
+UInt is implemented as a value class. Because of this, it's more efficiently represented.
+However, equality changes. Since value classes cannot override equals, we have
+that 1.toUInt != 1. The built-in numbers implement ScalaNumber which (with some
+implicit conversions) allows 1.toLong == 1.
+
+
 Credits
 -------
 

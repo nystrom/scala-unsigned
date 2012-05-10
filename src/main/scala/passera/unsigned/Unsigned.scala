@@ -1,85 +1,93 @@
 package passera.unsigned
 
-import scala.math.{ScalaNumber, ScalaNumericConversions}
+import Ops.{UnsignedOpWorkaround, SignedOpWorkaround}
 
-@serializable
 trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
                Promoted <: Unsigned[_, Promoted, SignedPromoted],
                SignedPromoted]
-               extends ScalaNumericConversions {
+  extends Any
+{
 
   def toUByte: UByte
   def toUShort: UShort
   def toUInt: UInt
   def toULong: ULong
 
-  override def byteValue: Byte
-  override def shortValue: Short
-  override def intValue: Int
-  override def longValue: Long
-  override def floatValue: Float
-  override def doubleValue: Double
+  def byteValue: Byte
+  def shortValue: Short
+  def intValue: Int
+  def longValue: Long
+  def floatValue: Float
+  def doubleValue: Double
 
   // Implementing ScalaNumber
   protected def isWhole: Boolean = true
   def underlying = this
 
-  def +(x: SignedPromoted): SignedPromoted
-  def -(x: SignedPromoted): SignedPromoted
-  def *(x: SignedPromoted): SignedPromoted
-  def /(x: SignedPromoted): SignedPromoted
-  def %(x: SignedPromoted): SignedPromoted
-  def &(x: SignedPromoted): SignedPromoted
-  def |(x: SignedPromoted): SignedPromoted
-  def ^(x: SignedPromoted): SignedPromoted
+  def toChar = intValue.toChar
+  def toByte = byteValue
+  def toShort = shortValue
+  def toInt = intValue
+  def toLong = longValue
+  def toFloat = floatValue
+  def toDouble = doubleValue
 
-  def +(x: UByte): Promoted
-  def -(x: UByte): Promoted
-  def *(x: UByte): Promoted
-  def /(x: UByte): Promoted
-  def %(x: UByte): Promoted
-  def &(x: UByte): Promoted
-  def |(x: UByte): Promoted
-  def ^(x: UByte): Promoted
+  def +(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def -(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def *(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def /(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def %(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def &(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def |(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+  def ^(x: SignedPromoted)(implicit ignore: SignedOpWorkaround): SignedPromoted
+
+  def +(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def -(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def *(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def /(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def %(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def &(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def |(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def ^(x: UByte)(implicit ignore: UnsignedOpWorkaround): Promoted
   def <(x: UByte): Boolean
   def >(x: UByte): Boolean
   def <=(x: UByte): Boolean
   def >=(x: UByte): Boolean
 
-  def +(x: UShort): Promoted
-  def -(x: UShort): Promoted
-  def *(x: UShort): Promoted
-  def /(x: UShort): Promoted
-  def %(x: UShort): Promoted
-  def &(x: UShort): Promoted
-  def |(x: UShort): Promoted
-  def ^(x: UShort): Promoted
+  def +(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def -(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def *(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def /(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def %(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def &(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def |(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def ^(x: UShort)(implicit ignore: UnsignedOpWorkaround): Promoted
   def <(x: UShort): Boolean
   def >(x: UShort): Boolean
   def <=(x: UShort): Boolean
   def >=(x: UShort): Boolean
 
-  def +(x: ULong): ULong
-  def -(x: ULong): ULong
-  def *(x: ULong): ULong
-  def /(x: ULong): ULong
-  def %(x: ULong): ULong
-  def &(x: ULong): ULong
-  def |(x: ULong): ULong
-  def ^(x: ULong): ULong
+  def +(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def -(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def *(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def /(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def %(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def &(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def |(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
+  def ^(x: ULong)(implicit ignore: UnsignedOpWorkaround): ULong
   def <(x: ULong): Boolean
   def >(x: ULong): Boolean
   def <=(x: ULong): Boolean
   def >=(x: ULong): Boolean
 
-  def +(x: UInt): Promoted
-  def -(x: UInt): Promoted
-  def *(x: UInt): Promoted
-  def /(x: UInt): Promoted
-  def %(x: UInt): Promoted
-  def &(x : UInt): Promoted
-  def |(x : UInt): Promoted
-  def ^(x : UInt): Promoted
+  def +(x: UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def -(x: UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def *(x: UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def /(x: UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def %(x: UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def &(x : UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def |(x : UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def ^(x : UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
   def <(x: UInt): Boolean
   def >(x: UInt): Boolean
   def <=(x: UInt): Boolean
@@ -90,27 +98,21 @@ trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
 
   // Equality comparison to UInt is baked in
 
-  // Override equals to allow comparison with other number types.
-  // By overriding ScalaNumber, we can cause UInt.equals to be invoked when
-  // comparing a number on the left with a UInt on the right.
-  // This is an (undocumented?) hack and might change in the future.
-  override def equals(x: Any): Boolean
-  def canEqual(x: Any): Boolean
-
   def unary_~ : Promoted
 
-  def <<(x : Int): Promoted
-  def <<(x : Long): Promoted
-  def >>(x : Long): Promoted
-  def >>(x : Int): Promoted
-  def >>>(x : Int): Promoted
-  def >>>(x : Long): Promoted
-  def <<(x : UInt): Promoted
-  def >>(x : UInt): Promoted
-  def >>>(x : UInt): Promoted
-  def <<(x : ULong): Promoted
-  def >>(x : ULong): Promoted
-  def >>>(x : ULong): Promoted
+  def <<(x : Int)(implicit ignore: SignedOpWorkaround): Promoted
+  def <<(x : Long)(implicit ignore: SignedOpWorkaround): Promoted
+  def >>(x : Long)(implicit ignore: SignedOpWorkaround): Promoted
+  def >>(x : Int)(implicit ignore: SignedOpWorkaround): Promoted
+  def >>>(x : Int)(implicit ignore: SignedOpWorkaround): Promoted
+  def >>>(x : Long)(implicit ignore: SignedOpWorkaround): Promoted
+
+  def <<(x : UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def <<(x : ULong)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def >>(x : UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def >>(x : ULong)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def >>>(x : UInt)(implicit ignore: UnsignedOpWorkaround): Promoted
+  def >>>(x : ULong)(implicit ignore: UnsignedOpWorkaround): Promoted
 
   override def toString: String
 
