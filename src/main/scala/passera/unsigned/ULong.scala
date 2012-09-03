@@ -177,15 +177,17 @@ case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNum
 
   def <<(x : Int) = ULong(rep << x)
   def <<(x : Long) = ULong(rep << x)
-  def >>(x : Long) = ULong(rep >>> x)
+  def <<(x : UInt) = ULong(rep << (x.rep & 0x3f))
+  def <<(x : ULong) = ULong(rep << (x.rep & 0x3f))
+
   def >>(x : Int) = ULong(rep >>> x)
+  def >>(x : Long) = ULong(rep >>> x)
+  def >>(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
+  def >>(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
+
   def >>>(x : Int) = ULong(rep >>> x)
   def >>>(x : Long) = ULong(rep >>> x)
-  def <<(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
-  def >>(x : UInt) = ULong(rep << (x.rep & 0x3f))
   def >>>(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
-  def <<(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
-  def >>(x : ULong) = ULong(rep << (x.rep & 0x3f))
   def >>>(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
 
   def unary_+ = this

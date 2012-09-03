@@ -133,15 +133,17 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
 
   def <<(x : Int) = UInt(intRep << x)
   def <<(x : Long) = UInt(intRep << x)
+  def <<(x : UInt) = UInt(intRep << (x.toInt & 0x1f))
+  def <<(x : ULong) = UInt(intRep << (x.toLong & 0x1f))
+
   def >>(x : Long) = UInt(intRep >>> x)
   def >>(x : Int) = UInt(intRep >>> x)
+  def >>(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
+  def >>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
+
   def >>>(x : Int) = UInt(intRep >>> x)
   def >>>(x : Long) = UInt(intRep >>> x)
-  def <<(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
-  def >>(x : UInt) = UInt(intRep << (x.toInt & 0x1f))
   def >>>(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
-  def <<(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
-  def >>(x : ULong) = UInt(intRep << (x.toLong & 0x1f))
   def >>>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
 
   override def toString = (intRep & 0xffffffffL).toString

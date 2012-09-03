@@ -82,4 +82,35 @@ object UnsignedCheck extends Properties("Unsigned") {
     forAll { (a: UInt, b: UInt) => a <= b == ! (a > b) }
   property(">= and ! <") =
     forAll { (a: UInt, b: UInt) => a >= b == ! (a < b) }
+
+  property("<< by Int") =
+    forAll { (a: Int, b: Int) => a.toUInt << (b & 0x1f) == (a << (b & 0x1f)).toUInt }
+  property("<< by Long") =
+    forAll { (a: Int, b: Long) => a.toUInt << (b & 0x1f) == (a << (b & 0x1f)).toUInt }
+  property("<< by UInt") =
+    forAll { (a: Int, b: Int) => a.toUInt << (b & 0x1f).toUInt == (a << (b & 0x1f)).toUInt }
+  property("<< by ULong") =
+    forAll { (a: Int, b: Long) => a.toUInt << (b & 0x1f).toULong == (a << (b & 0x1f)).toUInt }
+
+  property(">> by Int") =
+    forAll { (a: Int, b: Int) => a.toUInt >> (b & 0x1f) == (a >>> (b & 0x1f)).toUInt }
+  property(">> by Long") =
+    forAll { (a: Int, b: Long) => a.toUInt >> (b & 0x1f) == (a >>> (b & 0x1f)).toUInt }
+  property(">> by UInt") =
+    forAll { (a: Int, b: Int) => a.toUInt >> (b & 0x1f).toUInt == (a >>> (b & 0x1f)).toUInt }
+  property(">> by ULong") =
+    forAll { (a: Int, b: Long) => a.toUInt >> (b & 0x1f).toULong == (a >>> (b & 0x1f)).toUInt }
+
+  property(">>> by Int") =
+    forAll { (a: Int, b: Int) => a.toUInt >>> (b & 0x1f) == (a >>> (b & 0x1f)).toUInt }
+  property(">>> by Long") =
+    forAll { (a: Int, b: Long) => a.toUInt >>> (b & 0x1f) == (a >>> (b & 0x1f)).toUInt }
+  property(">>> by UInt") =
+    forAll { (a: Int, b: Int) => a.toUInt >>> (b & 0x1f).toUInt == (a >>> (b & 0x1f)).toUInt }
+  property(">>> by ULong") =
+    forAll { (a: Int, b: Long) => a.toUInt >>> (b & 0x1f).toULong == (a >>> (b & 0x1f)).toUInt }
+
+  property(">> and >>> equivalent") =
+    forAll { (a: Int, b: Int) => a.toUInt >> (b & 0x1f) == a.toUInt >>> (b & 0x1f) }
+
 }
