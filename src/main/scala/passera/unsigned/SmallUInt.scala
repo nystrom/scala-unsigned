@@ -6,8 +6,16 @@ import scala.math.{ScalaNumber, ScalaNumericConversions}
  * Supertrait of UByte, UShort, UInt
  */
 @serializable
-trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
+trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, Int] {
   private def intRep = intValue
+
+  override def toByte = intRep.toByte
+  override def toShort = intRep.toShort
+  override def toInt = intRep
+  override def toLong = intRep & 0xffffffffL
+  override def toFloat = intRep.toFloat
+  override def toDouble = intRep.toDouble
+  override def toChar = intRep.toChar
 
   def toUByte = UByte(intRep.toByte)
   def toUShort = UShort(intRep.toShort)
@@ -21,23 +29,23 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
   override def floatValue = (intRep & 0xffffffffL).toFloat
   override def doubleValue = (intRep & 0xffffffffL).toDouble
 
-  def +(x: Int): Int = this.toInt + x
-  def -(x: Int): Int = this.toInt - x
-  def *(x: Int): Int = this.toInt * x
-  def /(x: Int): Int = this.toInt / x
-  def %(x: Int): Int = this.toInt % x
-  def &(x: Int): Int = this.toInt & x
-  def |(x: Int): Int = this.toInt | x
-  def ^(x: Int): Int = this.toInt ^ x
+  def +(x: Int)(implicit d: DummyImplicit): Int = this.toInt + x
+  def -(x: Int)(implicit d: DummyImplicit): Int = this.toInt - x
+  def *(x: Int)(implicit d: DummyImplicit): Int = this.toInt * x
+  def /(x: Int)(implicit d: DummyImplicit): Int = this.toInt / x
+  def %(x: Int)(implicit d: DummyImplicit): Int = this.toInt % x
+  def &(x: Int)(implicit d: DummyImplicit): Int = this.toInt & x
+  def |(x: Int)(implicit d: DummyImplicit): Int = this.toInt | x
+  def ^(x: Int)(implicit d: DummyImplicit): Int = this.toInt ^ x
 
-  def +(x: Long): Long = this.toLong + x
-  def -(x: Long): Long = this.toLong - x
-  def *(x: Long): Long = this.toLong * x
-  def /(x: Long): Long = this.toLong / x
-  def %(x: Long): Long = this.toLong % x
-  def &(x: Long): Long = this.toLong & x
-  def |(x: Long): Long = this.toLong | x
-  def ^(x: Long): Long = this.toLong ^ x
+  def +(x: Long)(implicit d: DummyImplicit): Long = this.toLong + x
+  def -(x: Long)(implicit d: DummyImplicit): Long = this.toLong - x
+  def *(x: Long)(implicit d: DummyImplicit): Long = this.toLong * x
+  def /(x: Long)(implicit d: DummyImplicit): Long = this.toLong / x
+  def %(x: Long)(implicit d: DummyImplicit): Long = this.toLong % x
+  def &(x: Long)(implicit d: DummyImplicit): Long = this.toLong & x
+  def |(x: Long)(implicit d: DummyImplicit): Long = this.toLong | x
+  def ^(x: Long)(implicit d: DummyImplicit): Long = this.toLong ^ x
 
   def +(x: UByte): UInt = this + x.toUInt
   def -(x: UByte): UInt = this - x.toUInt
@@ -97,10 +105,25 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
   }
 
   def unary_+ = this.toUInt
-  def unary_- = UInt(-intRep)
+  def unary_- = UInt(-intRep) // maybe just -intRep ??
 
   // Equality comparison to UInt is baked in
 
+  def ==(x: Int)(implicit d: DummyImplicit) = intValue == x
+  def ==(x: Long)(implicit d: DummyImplicit) = longValue == x
+  // def ==(x: UInt) = longValue == x.longValue
+  def ==(x: ULong) = longValue == x.longValue
+  def ==(x: Float) = floatValue == x
+  def ==(x: Double) = doubleValue == x
+
+  def !=(x: Int)(implicit d: DummyImplicit) = intValue != x
+  def !=(x: Long)(implicit d: DummyImplicit) = longValue != x
+  // def !=(x: UInt) = longValue != x.longValue
+  def !=(x: ULong) = longValue != x.longValue
+  def !=(x: Float) = floatValue != x
+  def !=(x: Double) = doubleValue != x
+
+  /*
   // Override equals to allow comparison with other number types.
   // By overriding ScalaNumber, we can cause UInt.equals to be invoked when
   // comparing a number on the left with a UInt on the right.
@@ -117,6 +140,7 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
     case _: Number => true
     case _ => false
   }
+  */
 
   private def rot(x: Int) = (x + Int.MinValue)
 
@@ -131,18 +155,18 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Unsigned[U, UInt, Int] {
 
   def unary_~ = UInt(~intRep)
 
-  def <<(x : Int) = UInt(intRep << x)
-  def <<(x : Long) = UInt(intRep << x)
+  def <<(x : Int)(implicit d: DummyImplicit) = UInt(intRep << x)
+  def <<(x : Long)(implicit d: DummyImplicit) = UInt(intRep << x)
   def <<(x : UInt) = UInt(intRep << (x.toInt & 0x1f))
   def <<(x : ULong) = UInt(intRep << (x.toLong & 0x1f))
 
-  def >>(x : Long) = UInt(intRep >>> x)
-  def >>(x : Int) = UInt(intRep >>> x)
+  def >>(x : Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
+  def >>(x : Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
   def >>(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
   def >>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
 
-  def >>>(x : Int) = UInt(intRep >>> x)
-  def >>>(x : Long) = UInt(intRep >>> x)
+  def >>>(x : Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
+  def >>>(x : Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
   def >>>(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
   def >>>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
 

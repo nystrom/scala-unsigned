@@ -1,37 +1,45 @@
 package passera.unsigned
 
-import scala.math.{ScalaNumber, ScalaNumericConversions}
+import scala.math.ScalaNumericAnyConversions
 
 @serializable
 trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
                Promoted <: Unsigned[_, Promoted, SignedPromoted],
                SignedPromoted]
-               extends ScalaNumericConversions {
+               extends Any with ScalaNumericAnyConversions {
+
+  def toByte: Byte
+  def toChar: Char
+  def toShort: Short
+  def toInt: Int
+  def toLong: Long
+  def toFloat: Float
+  def toDouble: Double
 
   def toUByte: UByte
   def toUShort: UShort
   def toUInt: UInt
   def toULong: ULong
 
-  override def byteValue: Byte
-  override def shortValue: Short
-  override def intValue: Int
-  override def longValue: Long
-  override def floatValue: Float
-  override def doubleValue: Double
+  def byteValue: Byte
+  def shortValue: Short
+  def intValue: Int
+  def longValue: Long
+  def floatValue: Float
+  def doubleValue: Double
 
   // Implementing ScalaNumber
-  protected def isWhole: Boolean = true
+  def isWhole: Boolean = true
   def underlying = this
 
-  def +(x: SignedPromoted): SignedPromoted
-  def -(x: SignedPromoted): SignedPromoted
-  def *(x: SignedPromoted): SignedPromoted
-  def /(x: SignedPromoted): SignedPromoted
-  def %(x: SignedPromoted): SignedPromoted
-  def &(x: SignedPromoted): SignedPromoted
-  def |(x: SignedPromoted): SignedPromoted
-  def ^(x: SignedPromoted): SignedPromoted
+  def +(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def -(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def *(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def /(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def %(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def &(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def |(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
+  def ^(x: SignedPromoted)(implicit d: DummyImplicit): SignedPromoted
 
   def +(x: UByte): Promoted
   def -(x: UByte): Promoted
@@ -90,21 +98,23 @@ trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
 
   // Equality comparison to UInt is baked in
 
+/*
   // Override equals to allow comparison with other number types.
   // By overriding ScalaNumber, we can cause UInt.equals to be invoked when
   // comparing a number on the left with a UInt on the right.
   // This is an (undocumented?) hack and might change in the future.
   override def equals(x: Any): Boolean
   def canEqual(x: Any): Boolean
+  */
 
   def unary_~ : Promoted
 
-  def <<(x : Int): Promoted
-  def <<(x : Long): Promoted
-  def >>(x : Long): Promoted
-  def >>(x : Int): Promoted
-  def >>>(x : Int): Promoted
-  def >>>(x : Long): Promoted
+  def <<(x : Int)(implicit d: DummyImplicit): Promoted
+  def >>(x : Int)(implicit d: DummyImplicit): Promoted
+  def >>>(x : Int)(implicit d: DummyImplicit): Promoted
+  def <<(x : Long)(implicit d: DummyImplicit): Promoted
+  def >>(x : Long)(implicit d: DummyImplicit): Promoted
+  def >>>(x : Long)(implicit d: DummyImplicit): Promoted
   def <<(x : UInt): Promoted
   def >>(x : UInt): Promoted
   def >>>(x : UInt): Promoted

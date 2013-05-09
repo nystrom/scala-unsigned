@@ -3,38 +3,46 @@ package passera.unsigned
 import scala.math.{ScalaNumber, ScalaNumericConversions}
 
 @serializable
-case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNumericConversions with Unsigned[ULong, ULong, Long] {
-  private[unsigned] def rep = toLong
+case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULong, ULong, Long] {
+  private[unsigned] def rep = longValue
 
   def toUByte = UByte((rep & 0xffffffffL).toByte)
   def toUShort = UShort((rep & 0xffffffffL).toShort)
   def toUInt = UInt((rep & 0xffffffffL).toInt)
   def toULong = this
 
+  override def toByte: Byte = (rep & 0x7fffffffffffffffL).toByte
+  override def toChar: Char = (rep & 0x7fffffffffffffffL).toChar
+  override def toShort: Short = (rep & 0x7fffffffffffffffL).toShort
+  override def toInt: Int = (rep & 0x7fffffffffffffffL).toInt
+  override def toLong: Long = rep
+  override def toFloat: Float = (rep & 0x7fffffffffffffffL).toFloat
+  override def toDouble: Double = (rep >>> 1).toDouble * 2. + (rep & 1L)
+
   // override def intValue = rep
-  override def byteValue = rep.toByte
-  override def shortValue = rep.toShort
-  override def intValue = rep.toInt
-  override def floatValue = rep.toFloat
-  override def doubleValue = rep.toDouble
+  override def byteValue = toByte
+  override def shortValue = toShort
+  override def intValue = toInt
+  override def floatValue = toFloat
+  override def doubleValue = toDouble
 
-  def +(x: Int): Long = this.toLong + x
-  def -(x: Int): Long = this.toLong - x
-  def *(x: Int): Long = this.toLong * x
-  def /(x: Int): Long = this.toLong / x
-  def %(x: Int): Long = this.toLong % x
-  def &(x: Int): Long = this.toLong & x
-  def ^(x: Int): Long = this.toLong ^ x
-  def |(x: Int): Long = this.toLong | x
+  def +(x: Int)(implicit d: DummyImplicit): Long = this.toLong + x
+  def -(x: Int)(implicit d: DummyImplicit): Long = this.toLong - x
+  def *(x: Int)(implicit d: DummyImplicit): Long = this.toLong * x
+  def /(x: Int)(implicit d: DummyImplicit): Long = this.toLong / x
+  def %(x: Int)(implicit d: DummyImplicit): Long = this.toLong % x
+  def &(x: Int)(implicit d: DummyImplicit): Long = this.toLong & x
+  def ^(x: Int)(implicit d: DummyImplicit): Long = this.toLong ^ x
+  def |(x: Int)(implicit d: DummyImplicit): Long = this.toLong | x
 
-  def +(x: Long): Long = this.toLong + x
-  def -(x: Long): Long = this.toLong - x
-  def *(x: Long): Long = this.toLong * x
-  def /(x: Long): Long = this.toLong / x
-  def %(x: Long): Long = this.toLong % x
-  def &(x: Long): Long = this.toLong & x
-  def ^(x: Long): Long = this.toLong ^ x
-  def |(x: Long): Long = this.toLong | x
+  def +(x: Long)(implicit d: DummyImplicit): Long = this.toLong + x
+  def -(x: Long)(implicit d: DummyImplicit): Long = this.toLong - x
+  def *(x: Long)(implicit d: DummyImplicit): Long = this.toLong * x
+  def /(x: Long)(implicit d: DummyImplicit): Long = this.toLong / x
+  def %(x: Long)(implicit d: DummyImplicit): Long = this.toLong % x
+  def &(x: Long)(implicit d: DummyImplicit): Long = this.toLong & x
+  def ^(x: Long)(implicit d: DummyImplicit): Long = this.toLong ^ x
+  def |(x: Long)(implicit d: DummyImplicit): Long = this.toLong | x
 
   def +(x: UByte): ULong = this + x.toULong
   def -(x: UByte): ULong = this - x.toULong
@@ -139,8 +147,23 @@ case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNum
   def toOctalString = rep.toOctalString
   def toBinaryString = rep.toBinaryString
 
-  // Equality comparison to UInt is baked in
+  // Equality comparison to ULong is baked in
 
+  def ==(x: Int)(implicit d: DummyImplicit) = intValue == x
+  def ==(x: Long)(implicit d: DummyImplicit) = longValue == x
+  def ==(x: UInt) = longValue == x.longValue
+  // def ==(x: ULong) = longValue == x.longValue
+  def ==(x: Float) = floatValue == x
+  def ==(x: Double) = doubleValue == x
+
+  def !=(x: Int)(implicit d: DummyImplicit) = intValue != x
+  def !=(x: Long)(implicit d: DummyImplicit) = longValue != x
+  def !=(x: UInt) = longValue != x.longValue
+  // def !=(x: ULong) = longValue != x.longValue
+  def !=(x: Float) = floatValue != x
+  def !=(x: Double) = doubleValue != x
+
+  /*
   // Override equals to allow comparison with other number types.
   // By overriding ScalaNumber, we can cause UInt.equals to be invoked when
   // comparing a number on the left with a UInt on the right.
@@ -159,6 +182,7 @@ case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNum
     case _: Number => true
     case _ => false
   }
+  */
 
   // Here, compare to Int
   // def ==(x: Int) = rep == x && rep >= 0
@@ -175,18 +199,18 @@ case class ULong(override val longValue: Long) extends ScalaNumber with ScalaNum
   def |(x : ULong) = ULong(rep | x.rep)
   def ^(x : ULong) = ULong(rep ^ x.rep)
 
-  def <<(x : Int) = ULong(rep << x)
-  def <<(x : Long) = ULong(rep << x)
+  def <<(x : Int)(implicit d: DummyImplicit) = ULong(rep << x)
+  def <<(x : Long)(implicit d: DummyImplicit) = ULong(rep << x)
   def <<(x : UInt) = ULong(rep << (x.rep & 0x3f))
   def <<(x : ULong) = ULong(rep << (x.rep & 0x3f))
 
-  def >>(x : Int) = ULong(rep >>> x)
-  def >>(x : Long) = ULong(rep >>> x)
+  def >>(x : Int)(implicit d: DummyImplicit) = ULong(rep >>> x)
+  def >>(x : Long)(implicit d: DummyImplicit) = ULong(rep >>> x)
   def >>(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
   def >>(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
 
-  def >>>(x : Int) = ULong(rep >>> x)
-  def >>>(x : Long) = ULong(rep >>> x)
+  def >>>(x : Int)(implicit d: DummyImplicit) = ULong(rep >>> x)
+  def >>>(x : Long)(implicit d: DummyImplicit) = ULong(rep >>> x)
   def >>>(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
   def >>>(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
 

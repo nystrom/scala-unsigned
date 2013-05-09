@@ -28,7 +28,7 @@ object UnsignedPerf {
           c /= a
         }
 
-        c
+        c.intValue
       }
     }
 
