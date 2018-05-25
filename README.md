@@ -1,4 +1,4 @@
-Passera
+scala-unsigned
 =======
 
 This is an implementation of unsigned integers for Scala.
