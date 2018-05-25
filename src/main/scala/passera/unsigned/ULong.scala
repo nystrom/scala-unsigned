@@ -93,46 +93,38 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
     val n = rep
     val d = x.rep
 
-    if (true) return {
-      if (d < 0) {
-        if (this < x)
-          ULong(0l)
-        else
-          ULong(1l)
-      }
-      else {
-        val q = ((n >>> 1) / d) << 1
-        val r = n - q * d
-        if (ULong(r) >= x)
-          ULong(q+1)
-        else
-          ULong(q)
-      }
+    if (d < 0) {
+      if (this < x)
+        ULong(0l)
+      else
+        ULong(1l)
+    } else {
+      val q = ((n >>> 1) / d) << 1
+      val r = n - q * d
+      if (ULong(r) >= x)
+        ULong(q+1)
+      else
+        ULong(q)
     }
-
-    val t = d >> 63
-    val n1 = n & ~t
-    val a = n1 >>> 1
-    val b = a / d
-    val q0 = b << 1
-    val r = n - q0 * d
-    val q = q0 + (if (ULong(r) >= x) 1l else 0l)
-    ULong(q.toLong)
   }
 
   def %(x: ULong): ULong = {
     val n = rep
     val d = x.rep
 
-
-    val t = d >> 63
-    val n1 = n & ~t
-    val a = n1 >>> 1
-    val b = a / d
-    val q0 = b << 1
-    val r = n - q0 * d
-    // val q = q0 + (if (ULong(r) >= ULong(d)) 1 else 0)
-    ULong(r.toLong)
+    if (d < 0) {
+      if (this < x)
+        ULong(n)
+      else
+        ULong(n - d)
+    } else {
+      val q = ((n >>> 1) / d) << 1
+      val r = n - q * d
+      if (ULong(r) >= x)
+        ULong(r - d)
+      else
+        ULong(r)
+    }
   }
 
   override def toString =
