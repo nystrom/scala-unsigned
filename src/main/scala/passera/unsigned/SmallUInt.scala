@@ -1,12 +1,12 @@
 package passera.unsigned
 
-import scala.math.{ScalaNumber, ScalaNumericConversions}
+import scala.math.{ ScalaNumber, ScalaNumericConversions }
 
 /**
  * Supertrait of UByte, UShort, UInt
  */
-@serializable
-trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, Int] {
+
+trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, Int] with Serializable {
   private def intRep = intValue
 
   override def toByte = intRep.toByte
@@ -16,6 +16,7 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, 
   override def toFloat = intRep.toFloat
   override def toDouble = intRep.toDouble
   override def toChar = intRep.toChar
+  def toBigInt = BigInt(intRep)
 
   def toUByte = UByte(intRep.toByte)
   def toUShort = UShort(intRep.toShort)
@@ -149,30 +150,30 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, 
   def <=(x: UInt) = rot(intRep) <= rot(x.intRep)
   def >=(x: UInt) = rot(intRep) >= rot(x.intRep)
 
-  def &(x : UInt) = UInt(intRep & x.intRep)
-  def |(x : UInt) = UInt(intRep | x.intRep)
-  def ^(x : UInt) = UInt(intRep ^ x.intRep)
+  def &(x: UInt) = UInt(intRep & x.intRep)
+  def |(x: UInt) = UInt(intRep | x.intRep)
+  def ^(x: UInt) = UInt(intRep ^ x.intRep)
 
   def unary_~ = UInt(~intRep)
 
-  def <<(x : Int)(implicit d: DummyImplicit) = UInt(intRep << x)
-  def <<(x : Long)(implicit d: DummyImplicit) = UInt(intRep << x)
-  def <<(x : UInt) = UInt(intRep << (x.toInt & 0x1f))
-  def <<(x : ULong) = UInt(intRep << (x.toLong & 0x1f))
+  def <<(x: Int)(implicit d: DummyImplicit) = UInt(intRep << x)
+  def <<(x: Long)(implicit d: DummyImplicit) = UInt(intRep << x)
+  def <<(x: UInt) = UInt(intRep << (x.toInt & 0x1f))
+  def <<(x: ULong) = UInt(intRep << (x.toLong & 0x1f))
 
-  def >>(x : Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>(x : Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
-  def >>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
+  def >>(x: Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
+  def >>(x: Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
+  def >>(x: UInt) = UInt(intRep >>> (x.toInt & 0x1f))
+  def >>(x: ULong) = UInt(intRep >>> (x.toLong & 0x1f))
 
-  def >>>(x : Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>>(x : Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>>(x : UInt) = UInt(intRep >>> (x.toInt & 0x1f))
-  def >>>(x : ULong) = UInt(intRep >>> (x.toLong & 0x1f))
+  def >>>(x: Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
+  def >>>(x: Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
+  def >>>(x: UInt) = UInt(intRep >>> (x.toInt & 0x1f))
+  def >>>(x: ULong) = UInt(intRep >>> (x.toLong & 0x1f))
 
   override def toString = (intRep & 0xffffffffL).toString
 
-  def +(x : java.lang.String) = this.toString + x
+  def +(x: java.lang.String) = this.toString + x
 
   def toHexString = (intRep & 0xffffffffL).toHexString
   def toOctalString = (intRep & 0xffffffffL).toOctalString

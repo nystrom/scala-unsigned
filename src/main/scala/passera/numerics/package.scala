@@ -1,5 +1,7 @@
 package passera
 
+import scala.language.implicitConversions
+
 package object numerics {
   implicit def toRicherInt(x: Int): RicherInt = new RicherInt(x)
   implicit def toRicherInt(x: scala.runtime.RichInt) = new YetRicherInt(x.self.asInstanceOf[Int])

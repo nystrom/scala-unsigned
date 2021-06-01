@@ -2,11 +2,8 @@ package passera.unsigned
 
 import scala.math.ScalaNumericAnyConversions
 
-@serializable
-trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
-               Promoted <: Unsigned[_, Promoted, SignedPromoted],
-               SignedPromoted]
-               extends Any with ScalaNumericAnyConversions {
+trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted], Promoted <: Unsigned[_, Promoted, SignedPromoted], SignedPromoted]
+  extends Any with ScalaNumericAnyConversions with Serializable {
 
   def toByte: Byte
   def toChar: Char
@@ -85,9 +82,9 @@ trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
   def *(x: UInt): Promoted
   def /(x: UInt): Promoted
   def %(x: UInt): Promoted
-  def &(x : UInt): Promoted
-  def |(x : UInt): Promoted
-  def ^(x : UInt): Promoted
+  def &(x: UInt): Promoted
+  def |(x: UInt): Promoted
+  def ^(x: UInt): Promoted
   def <(x: UInt): Boolean
   def >(x: UInt): Boolean
   def <=(x: UInt): Boolean
@@ -98,7 +95,7 @@ trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
 
   // Equality comparison to UInt is baked in
 
-/*
+  /*
   // Override equals to allow comparison with other number types.
   // By overriding ScalaNumber, we can cause UInt.equals to be invoked when
   // comparing a number on the left with a UInt on the right.
@@ -109,22 +106,22 @@ trait Unsigned[U <: Unsigned[U, Promoted, SignedPromoted],
 
   def unary_~ : Promoted
 
-  def <<(x : Int)(implicit d: DummyImplicit): Promoted
-  def >>(x : Int)(implicit d: DummyImplicit): Promoted
-  def >>>(x : Int)(implicit d: DummyImplicit): Promoted
-  def <<(x : Long)(implicit d: DummyImplicit): Promoted
-  def >>(x : Long)(implicit d: DummyImplicit): Promoted
-  def >>>(x : Long)(implicit d: DummyImplicit): Promoted
-  def <<(x : UInt): Promoted
-  def >>(x : UInt): Promoted
-  def >>>(x : UInt): Promoted
-  def <<(x : ULong): Promoted
-  def >>(x : ULong): Promoted
-  def >>>(x : ULong): Promoted
+  def <<(x: Int)(implicit d: DummyImplicit): Promoted
+  def >>(x: Int)(implicit d: DummyImplicit): Promoted
+  def >>>(x: Int)(implicit d: DummyImplicit): Promoted
+  def <<(x: Long)(implicit d: DummyImplicit): Promoted
+  def >>(x: Long)(implicit d: DummyImplicit): Promoted
+  def >>>(x: Long)(implicit d: DummyImplicit): Promoted
+  def <<(x: UInt): Promoted
+  def >>(x: UInt): Promoted
+  def >>>(x: UInt): Promoted
+  def <<(x: ULong): Promoted
+  def >>(x: ULong): Promoted
+  def >>>(x: ULong): Promoted
 
   override def toString: String
 
-  def +(x : java.lang.String): String
+  def +(x: java.lang.String): String
 
   def toHexString: String
   def toOctalString: String

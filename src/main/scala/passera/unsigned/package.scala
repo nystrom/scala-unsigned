@@ -1,5 +1,7 @@
 package passera
 
+import scala.language.implicitConversions
+
 package object unsigned {
   // implicit def s2u(x: Int) = UInt(x)
   // implicit def u2s(x: UInt) = x.rep
@@ -100,7 +102,7 @@ package object unsigned {
   }
 
   trait UByteOrdering extends Ordering[UByte] {
-    def compare(x: UByte, y: UByte) = 
+    def compare(x: UByte, y: UByte) =
       if (x < y) -1
       else if (x == y) 0
       else 1
@@ -108,7 +110,7 @@ package object unsigned {
   implicit object UByteOrdering extends UByteOrdering
 
   trait UShortOrdering extends Ordering[UShort] {
-    def compare(x: UShort, y: UShort) = 
+    def compare(x: UShort, y: UShort) =
       if (x < y) -1
       else if (x == y) 0
       else 1
@@ -116,7 +118,7 @@ package object unsigned {
   implicit object UShortOrdering extends UShortOrdering
 
   trait UIntOrdering extends Ordering[UInt] {
-    def compare(x: UInt, y: UInt) = 
+    def compare(x: UInt, y: UInt) =
       if (x < y) -1
       else if (x == y) 0
       else 1
@@ -124,7 +126,7 @@ package object unsigned {
   implicit object UIntOrdering extends UIntOrdering
 
   trait ULongOrdering extends Ordering[ULong] {
-    def compare(x: ULong, y: ULong) = 
+    def compare(x: ULong, y: ULong) =
       if (x < y) -1
       else if (x == y) 0
       else 1
@@ -209,9 +211,9 @@ package object unsigned {
     def until(y: UInt): Range = x.toInt until y.toInt
 
     def compare(y: UInt): Int = {
-        if (x < y) 1
-        else if (x > y) -1
-        else 0
+      if (x < y) 1
+      else if (x > y) -1
+      else 0
     }
     def max(y: UInt) = if (x < y) y else x
     def min(y: UInt) = if (x > y) y else x

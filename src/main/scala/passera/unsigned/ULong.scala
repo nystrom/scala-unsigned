@@ -1,9 +1,8 @@
 package passera.unsigned
 
-import scala.math.{ScalaNumber, ScalaNumericConversions}
+import scala.math.{ ScalaNumber, ScalaNumericConversions }
 
-@serializable
-case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULong, ULong, Long] {
+case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULong, ULong, Long] with Serializable {
   private[unsigned] def rep = longValue
 
   def toUByte = UByte((rep & 0xffffffffL).toByte)
@@ -17,7 +16,8 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
   override def toInt: Int = (rep & 0x7fffffffffffffffL).toInt
   override def toLong: Long = rep
   override def toFloat: Float = (rep & 0x7fffffffffffffffL).toFloat
-  override def toDouble: Double = (rep >>> 1).toDouble * 2. + (rep & 1L)
+  override def toDouble: Double = (rep >>> 1).toDouble * 2.0 + (rep & 1L)
+  def toBigInt: BigInt = if (rep >= 0) BigInt(rep) else ULong.MaxValueAsBigInt - rep.abs + 1
 
   // override def intValue = rep
   override def byteValue = toByte
@@ -99,12 +99,11 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
           ULong(0l)
         else
           ULong(1l)
-      }
-      else {
+      } else {
         val q = ((n >>> 1) / d) << 1
         val r = n - q * d
         if (ULong(r) >= x)
-          ULong(q+1)
+          ULong(q + 1)
         else
           ULong(q)
       }
@@ -124,7 +123,6 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
     val n = rep
     val d = x.rep
 
-
     val t = d >> 63
     val n1 = n & ~t
     val a = n1 >>> 1
@@ -138,10 +136,10 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
   override def toString =
     if (rep >= 0L)
       rep.toString
-    else if (rep == 1 << 63)
-      (rep.toString).tail
+    else if (rep == Long.MinValue)
+      ULong.maxULongString
     else
-      (~(rep - 1)).toString
+      this.toBigInt.toString // (~(rep - 1)).toString
 
   def toHexString = rep.toHexString
   def toOctalString = rep.toOctalString
@@ -193,26 +191,26 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
   def <=(x: ULong) = rot(rep) <= rot(x.rep)
   def >=(x: ULong) = rot(rep) >= rot(x.rep)
 
-  def +(x : java.lang.String) = this.toString + x
+  def +(x: java.lang.String) = this.toString + x
 
-  def &(x : ULong) = ULong(rep & x.rep)
-  def |(x : ULong) = ULong(rep | x.rep)
-  def ^(x : ULong) = ULong(rep ^ x.rep)
+  def &(x: ULong) = ULong(rep & x.rep)
+  def |(x: ULong) = ULong(rep | x.rep)
+  def ^(x: ULong) = ULong(rep ^ x.rep)
 
-  def <<(x : Int)(implicit d: DummyImplicit) = ULong(rep << x)
-  def <<(x : Long)(implicit d: DummyImplicit) = ULong(rep << x)
-  def <<(x : UInt) = ULong(rep << (x.rep & 0x3f))
-  def <<(x : ULong) = ULong(rep << (x.rep & 0x3f))
+  def <<(x: Int)(implicit d: DummyImplicit) = ULong(rep << x)
+  def <<(x: Long)(implicit d: DummyImplicit) = ULong(rep << x)
+  def <<(x: UInt) = ULong(rep << (x.rep & 0x3f))
+  def <<(x: ULong) = ULong(rep << (x.rep & 0x3f))
 
-  def >>(x : Int)(implicit d: DummyImplicit) = ULong(rep >>> x)
-  def >>(x : Long)(implicit d: DummyImplicit) = ULong(rep >>> x)
-  def >>(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
-  def >>(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
+  def >>(x: Int)(implicit d: DummyImplicit) = ULong(rep >>> x)
+  def >>(x: Long)(implicit d: DummyImplicit) = ULong(rep >>> x)
+  def >>(x: UInt) = ULong(rep >>> (x.rep & 0x3f))
+  def >>(x: ULong) = ULong(rep >>> (x.rep & 0x3f))
 
-  def >>>(x : Int)(implicit d: DummyImplicit) = ULong(rep >>> x)
-  def >>>(x : Long)(implicit d: DummyImplicit) = ULong(rep >>> x)
-  def >>>(x : UInt) = ULong(rep >>> (x.rep & 0x3f))
-  def >>>(x : ULong) = ULong(rep >>> (x.rep & 0x3f))
+  def >>>(x: Int)(implicit d: DummyImplicit) = ULong(rep >>> x)
+  def >>>(x: Long)(implicit d: DummyImplicit) = ULong(rep >>> x)
+  def >>>(x: UInt) = ULong(rep >>> (x.rep & 0x3f))
+  def >>>(x: ULong) = ULong(rep >>> (x.rep & 0x3f))
 
   def unary_+ = this
   def unary_- = ULong(-rep)
@@ -220,6 +218,9 @@ case class ULong(override val longValue: Long) extends AnyVal with Unsigned[ULon
 }
 
 object ULong {
-  def MinValue = ULong(0L)
-  def MaxValue = ULong(~0L)
+  val MinValue = ULong(0L)
+  val MaxValue = ULong(~0L)
+
+  val MaxValueAsBigInt = BigInt(Long.MinValue).abs
+  private val maxULongString = MaxValueAsBigInt.toString()
 }
