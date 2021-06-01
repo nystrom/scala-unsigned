@@ -1,34 +1,58 @@
+/*
+ * Copyright (c) 2011-2013, Nate Nystrom
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package passera.unsigned
 
-import scala.math.{ ScalaNumber, ScalaNumericConversions }
+import java.math.{BigInteger => JBigInt}
 
 /**
  * Supertrait of UByte, UShort, UInt
  */
 
 trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, Int] with Serializable {
-  private def intRep = intValue
+  override def toByte = intValue.toByte
+  override def toShort = intValue.toShort
+  override def toInt = intValue
+  override def toLong = intValue & 0xffffffffL
+  override def toFloat = intValue.toFloat
+  override def toDouble = intValue.toDouble
+  override def toChar = intValue.toChar
+  def toBigInt = JBigInt.valueOf(intValue)
 
-  override def toByte = intRep.toByte
-  override def toShort = intRep.toShort
-  override def toInt = intRep
-  override def toLong = intRep & 0xffffffffL
-  override def toFloat = intRep.toFloat
-  override def toDouble = intRep.toDouble
-  override def toChar = intRep.toChar
-  def toBigInt = BigInt(intRep)
+  def toUByte = UByte(intValue.toByte)
+  def toUShort = UShort(intValue.toShort)
+  def toUInt = UInt(intValue)
+  def toULong = ULong(intValue & 0xffffffffL)
 
-  def toUByte = UByte(intRep.toByte)
-  def toUShort = UShort(intRep.toShort)
-  def toUInt = UInt(intRep)
-  def toULong = ULong(intRep & 0xffffffffL)
-
-  override def byteValue = intRep.toByte
-  override def shortValue = intRep.toShort
+  override def byteValue = intValue.toByte
+  override def shortValue = intValue.toShort
   override def intValue: Int
-  override def longValue = (intRep & 0xffffffffL)
-  override def floatValue = (intRep & 0xffffffffL).toFloat
-  override def doubleValue = (intRep & 0xffffffffL).toDouble
+  override def longValue = (intValue & 0xffffffffL)
+  override def floatValue = (intValue & 0xffffffffL).toFloat
+  override def doubleValue = (intValue & 0xffffffffL).toDouble
 
   def +(x: Int)(implicit d: DummyImplicit): Int = this.toInt + x
   def -(x: Int)(implicit d: DummyImplicit): Int = this.toInt - x
@@ -87,39 +111,37 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, 
   def <=(x: ULong): Boolean = this.toULong <= x
   def >=(x: ULong): Boolean = this.toULong >= x
 
-  def +(x: UInt) = UInt(intRep + x.intRep)
-  def -(x: UInt) = UInt(intRep - x.intRep)
-  def *(x: UInt) = UInt(intRep * x.intRep)
+  def +(x: UInt) = UInt(intValue + x.intValue)
+  def -(x: UInt) = UInt(intValue - x.intValue)
+  def *(x: UInt) = UInt(intValue * x.intValue)
 
   def /(x: UInt) = {
-    val n = intRep & 0xffffffffL
-    val m = x.intRep & 0xffffffffL
+    val n = intValue & 0xffffffffL
+    val m = x.intValue & 0xffffffffL
     val r = n / m
     UInt(r.toInt)
   }
 
   def %(x: UInt) = {
-    val n = intRep & 0xffffffffL
-    val m = x.intRep & 0xffffffffL
+    val n = intValue & 0xffffffffL
+    val m = x.intValue & 0xffffffffL
     val r = n % m
     UInt(r.toInt)
   }
 
   def unary_+ = this.toUInt
-  def unary_- = UInt(-intRep) // maybe just -intRep ??
+  def unary_- = UInt(-intValue) // maybe just -intValue ??
 
   // Equality comparison to UInt is baked in
 
   def ==(x: Int)(implicit d: DummyImplicit) = intValue == x
   def ==(x: Long)(implicit d: DummyImplicit) = longValue == x
-  // def ==(x: UInt) = longValue == x.longValue
   def ==(x: ULong) = longValue == x.longValue
   def ==(x: Float) = floatValue == x
   def ==(x: Double) = doubleValue == x
 
   def !=(x: Int)(implicit d: DummyImplicit) = intValue != x
   def !=(x: Long)(implicit d: DummyImplicit) = longValue != x
-  // def !=(x: UInt) = longValue != x.longValue
   def !=(x: ULong) = longValue != x.longValue
   def !=(x: Float) = floatValue != x
   def !=(x: Double) = doubleValue != x
@@ -130,7 +152,7 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, 
   // comparing a number on the left with a UInt on the right.
   // This is an (undocumented?) hack and might change in the future.
   override def equals(x: Any) = x match {
-    case x: SmallUInt[_] => this.toInt == x.intRep
+    case x: SmallUInt[_] => this.toInt == x.intValue
     case x: ULong => this.toULong == x
     case x: Number => this.longValue == x.longValue && x.longValue >= 0
     case _ => false
@@ -145,37 +167,37 @@ trait SmallUInt[U <: Unsigned[U, UInt, Int]] extends Any with Unsigned[U, UInt, 
 
   private def rot(x: Int) = (x + Int.MinValue)
 
-  def <(x: UInt) = rot(intRep) < rot(x.intRep)
-  def >(x: UInt) = rot(intRep) > rot(x.intRep)
-  def <=(x: UInt) = rot(intRep) <= rot(x.intRep)
-  def >=(x: UInt) = rot(intRep) >= rot(x.intRep)
+  def <(x: UInt) = rot(intValue) < rot(x.intValue)
+  def >(x: UInt) = rot(intValue) > rot(x.intValue)
+  def <=(x: UInt) = rot(intValue) <= rot(x.intValue)
+  def >=(x: UInt) = rot(intValue) >= rot(x.intValue)
 
-  def &(x: UInt) = UInt(intRep & x.intRep)
-  def |(x: UInt) = UInt(intRep | x.intRep)
-  def ^(x: UInt) = UInt(intRep ^ x.intRep)
+  def &(x: UInt) = UInt(intValue & x.intValue)
+  def |(x: UInt) = UInt(intValue | x.intValue)
+  def ^(x: UInt) = UInt(intValue ^ x.intValue)
 
-  def unary_~ = UInt(~intRep)
+  def unary_~ = UInt(~intValue)
 
-  def <<(x: Int)(implicit d: DummyImplicit) = UInt(intRep << x)
-  def <<(x: Long)(implicit d: DummyImplicit) = UInt(intRep << x)
-  def <<(x: UInt) = UInt(intRep << (x.toInt & 0x1f))
-  def <<(x: ULong) = UInt(intRep << (x.toLong & 0x1f))
+  def <<(x: Int)(implicit d: DummyImplicit) = UInt(intValue << x)
+  def <<(x: Long)(implicit d: DummyImplicit) = UInt(intValue << x.toInt)
+  def <<(x: UInt) = UInt(intValue << (x.toInt & 0x1f))
+  def <<(x: ULong) = UInt(intValue << (x.toLong & 0x1f).toInt)
 
-  def >>(x: Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>(x: Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>(x: UInt) = UInt(intRep >>> (x.toInt & 0x1f))
-  def >>(x: ULong) = UInt(intRep >>> (x.toLong & 0x1f))
+  def >>(x: Int)(implicit d: DummyImplicit) = UInt(intValue >>> x)
+  def >>(x: Long)(implicit d: DummyImplicit) = UInt(intValue >>> x.toInt)
+  def >>(x: UInt) = UInt(intValue >>> (x.toInt & 0x1f))
+  def >>(x: ULong) = UInt(intValue >>> (x.toLong & 0x1f).toInt)
 
-  def >>>(x: Int)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>>(x: Long)(implicit d: DummyImplicit) = UInt(intRep >>> x)
-  def >>>(x: UInt) = UInt(intRep >>> (x.toInt & 0x1f))
-  def >>>(x: ULong) = UInt(intRep >>> (x.toLong & 0x1f))
+  def >>>(x: Int)(implicit d: DummyImplicit) = UInt(intValue >>> x)
+  def >>>(x: Long)(implicit d: DummyImplicit) = UInt(intValue >>> x.toInt)
+  def >>>(x: UInt) = UInt(intValue >>> (x.toInt & 0x1f))
+  def >>>(x: ULong) = UInt(intValue >>> (x.toLong & 0x1f).toInt)
 
-  override def toString = (intRep & 0xffffffffL).toString
+  override def toString = (intValue & 0xffffffffL).toString
 
   def +(x: java.lang.String) = this.toString + x
 
-  def toHexString = (intRep & 0xffffffffL).toHexString
-  def toOctalString = (intRep & 0xffffffffL).toOctalString
-  def toBinaryString = (intRep & 0xffffffffL).toBinaryString
+  def toHexString = (intValue & 0xffffffffL).toHexString
+  def toOctalString = (intValue & 0xffffffffL).toOctalString
+  def toBinaryString = (intValue & 0xffffffffL).toBinaryString
 }
